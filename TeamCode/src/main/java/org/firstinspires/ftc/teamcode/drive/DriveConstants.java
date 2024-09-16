@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 /*
  * Constants shared between multiple drive types.
+ * https://learnroadrunner.com/drive-constants.html#base-constraints
  *
  * TODO: Tune or adjust the following constants to fit your robot. Note that the non-final
  * fields may also be edited through the dashboard (connect to the robot's WiFi network and
@@ -18,11 +19,20 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 @Config
 public class DriveConstants {
 
+    // Switch to false when tuning the DriveConstants, return to true after that.
+    public static final boolean USE_ODOMETRY_WHEELS = true;
+
     /*
      * These are motor constants that should be listed online for your motors.
+     *
+     * GOBILDA Yellow Jacket Planetary gear Motor: 5203-2402-0019
+     * 19.2:1 Ratio
+     * 24mm Length, 8mm REX Shaft
+     * 312 RPM, 3.3-5V Encoder
+     * https://www.gobilda.com/5203-series-yellow-jacket-planetary-gear-motor-19-2-1-ratio-24mm-length-8mm-rex-shaft-312-rpm-3-3-5v-encoder/
      */
-    public static final double TICKS_PER_REV = 1;
-    public static final double MAX_RPM = 1;
+    public static final double TICKS_PER_REV = 537.7;
+    public static final double MAX_RPM = 312;
 
     /*
      * Set RUN_USING_ENCODER to true to enable built-in hub velocity control using drive encoders.
@@ -37,6 +47,26 @@ public class DriveConstants {
             getMotorVelocityF(MAX_RPM / 60 * TICKS_PER_REV));
 
     /*
+     * Component names:
+     */
+    public static String LT_ENCODER, RT_ENCODER, BK_ENCODER;
+    public static String LF_MOTOR, RF_MOTOR, RB_MOTOR, LB_MOTOR;
+    public static String HB_IMU;
+
+    static {
+        LT_ENCODER = "par0";
+        RT_ENCODER = "par1";
+        BK_ENCODER = "perp";
+
+        LF_MOTOR = "l front";
+        RF_MOTOR = "r front";
+        RB_MOTOR = "r back";
+        LB_MOTOR = "l back";
+
+        HB_IMU = "imu";
+    }
+
+    /*
      * These are physical constants that can be determined from your robot (including the track
      * width; it will be tune empirically later although a rough estimate is important). Users are
      * free to chose whichever linear distance unit they would like so long as it is consistently
@@ -46,7 +76,7 @@ public class DriveConstants {
      */
     public static double WHEEL_RADIUS = 2; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 1; // in
+    public static double TRACK_WIDTH = 16.25; // in (center left wheel to center right wheel)
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -65,8 +95,11 @@ public class DriveConstants {
      * small and gradually increase them later after everything is working. All distance units are
      * inches.
      */
+
+    // Theoretical Max = (MAX_RPM / 60) * GEAR_RATIO * WHEEL_RADIUS * 2 * PI
+    // 65.312 = (312 / 60) * 1 * 2 * 3.14
     public static double MAX_VEL = 30;
-    public static double MAX_ACCEL = 30;
+    public static double MAX_ACCEL = 30; // recommended to initially keep the same as MAX_VEL
     public static double MAX_ANG_VEL = Math.toRadians(60);
     public static double MAX_ANG_ACCEL = Math.toRadians(60);
 
@@ -76,7 +109,7 @@ public class DriveConstants {
     public static RevHubOrientationOnRobot.LogoFacingDirection LOGO_FACING_DIR =
             RevHubOrientationOnRobot.LogoFacingDirection.UP;
     public static RevHubOrientationOnRobot.UsbFacingDirection USB_FACING_DIR =
-            RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
+            RevHubOrientationOnRobot.UsbFacingDirection.RIGHT;
 
 
     public static double encoderTicksToInches(double ticks) {
