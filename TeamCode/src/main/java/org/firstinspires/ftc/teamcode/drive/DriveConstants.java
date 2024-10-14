@@ -20,9 +20,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 public class DriveConstants {
 
     // Switch to false when tuning the DriveConstants, return to true after that.
-    public static final boolean USE_ODOMETRY_WHEELS = true;
-
-    /*
+    public static final boolean USE_ODOMETRY_WHEELS = true;    /*
      * These are motor constants that should be listed online for your motors.
      *
      * GOBILDA Yellow Jacket Planetary gear Motor: 5203-2402-0019
